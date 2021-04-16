@@ -1,6 +1,6 @@
 const MongoClient = require('mongodb').MongoClient; 
 const ObjectID  = require('mongodb').ObjectID; 
-const dbname = 'crud_todo'; 
+const dbname = 'todo'; 
 const url = 'mongodb://localhost:27017'; 
 const mongoOptions = { useNewUrlParser: true, useUnifiedTopology: true }; 
 

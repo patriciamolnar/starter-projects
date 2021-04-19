@@ -34,6 +34,18 @@ app.get('/getTodos', (req, res) => {
     });
 });
 
+// add todos to DB
+app.post('/', (req, res) => {
+    const userInput = req.body; 
+    db.getDB().collection(collection).insertOne(userInput, (err, result) => {
+        if(err) {
+            console.log(err);
+        } else {
+            res.json({result: result, document: result.ops[0]});
+        }
+    })
+})
+
 //make changes to individual todos
 app.put('/:id', (req, res) => {
     const todoID = req.params.id;

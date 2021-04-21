@@ -41,7 +41,7 @@ app.post('/', (req, res) => {
         if(err) {
             console.log(err);
         } else {
-            res.json({result: result, document: result.ops[0]});
+            res.json({document: result.ops[0]});
         }
     })
 })

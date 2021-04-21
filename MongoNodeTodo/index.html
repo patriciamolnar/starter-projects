@@ -20,17 +20,40 @@
         window.addEventListener('DOMContentLoaded', () => {
             const form = document.querySelector('form');
             const input = document.getElementById('todo'); 
-            const container = document.getElementById('container'); 
+            const container = document.querySelector('.todo-container'); 
 
             const resetInput = () => {
                 input.value = '';
             }
 
             const appendTodo = (json) => {
-                const p = document.createElement('p'); 
-                p.textContent = json.task; 
-                container.append(p);
+                json.forEach(todo => {
+                    const div = document.createElement('div');
+
+                    const ele = document.createElement('input'); 
+                    ele.setAttribute('type', 'text'); 
+                    ele.disabled = true;
+                    ele.value = todo.task; 
+
+                    const editBtn = document.createElement('button'); 
+                    editBtn.setAttribute('id', todo._id); 
+                    editBtn.textContent = 'Edit'; 
+                    editBtn.addEventListener('click', editTodo);
+
+                    const deleteBtn = document.createElement('button'); 
+                    deleteBtn.setAttribute('id', todo._id); 
+                    deleteBtn.textContent = 'Delete'; 
+                    deleteBtn.addEventListener('click', deleteTodo);
+
+                    div.append(ele, editBtn, deleteBtn);
+                    container.append(div);    
+                });
             }
+
+            // GET DATA FROM DB
+            fetch('/getTodos')
+                .then(response => response.json())
+                .then(data => appendTodo(data));
 
             // POST DATA TO DB
             async function postData(data = {}) {
@@ -45,12 +68,20 @@
                 return response.json(); 
             }
 
+            async function editTodo(data = {}, id = '') {
+                
+            }
+
+            async function deleteTodo(id = '') {
+                
+            }
+
             // post data when submitted. 
             form.addEventListener('submit', (e) => {
                 e.preventDefault(); 
                 const data = input.value; 
                 postData({"task": data })
-                    .then(result => console.log(result))
+                    .then(result => appendTodo([result.result.document]))
                     .catch(err => console.log(err));
                 resetInput(); 
             });

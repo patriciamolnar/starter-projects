@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>Todo App</h1>
-    <form>
+    <form id="main-form">
         <label for="todo"></label>
         <input type="text" name="todo" id="todo" placeholder="Add todo...">
         <button type="submit">Add</button>
@@ -18,7 +18,7 @@
 
     <script>
         window.addEventListener('DOMContentLoaded', () => {
-            const form = document.querySelector('form');
+            const form = document.getElementById('main-form');
             const input = document.getElementById('todo'); 
             const container = document.querySelector('.todo-container'); 
 
@@ -126,10 +126,7 @@
                 const id = ele.parentElement.children[0].getAttribute('id');
 
                 deleteData(id)
-                    .then(result => {
-                        console.log(result);
-                        ele.parentElement.remove(); 
-                    })
+                    .then(result => ele.parentElement.remove())
                     .catch(err => console.log(err));
             }
 
@@ -138,7 +135,7 @@
                 e.preventDefault(); 
                 const data = input.value; 
                 postData({"task": data })
-                    .then(result => appendTodo([result.result.document]))
+                    .then(result => appendTodo([result.document]))
                     .catch(err => console.log(err));
                 resetInput(); 
             });

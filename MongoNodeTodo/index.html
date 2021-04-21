@@ -46,7 +46,7 @@
                     // deleteBtn.setAttribute('id', todo._id); 
                     deleteBtn.textContent = 'Delete'; 
                     deleteBtn.setAttribute('type', 'button');
-                    deleteBtn.addEventListener('click', deleteTodo);
+                    deleteBtn.addEventListener('click', (e) => deleteTodo(e.target));
 
                     form.append(ele, editBtn, deleteBtn);
                     container.append(form);    
@@ -114,8 +114,23 @@
             }
 
             //DELETE DATA FROM DB
-            const deleteTodo = (ele) => {
+            async function deleteData(id = '') {
+                const url = `/${id}`;
+                const response = await fetch(url, {
+                    method: 'DELETE', 
+                });
+                return response.json(); 
+            }
 
+            const deleteTodo = (ele) => {
+                const id = ele.parentElement.children[0].getAttribute('id');
+
+                deleteData(id)
+                    .then(result => {
+                        console.log(result);
+                        ele.parentElement.remove(); 
+                    })
+                    .catch(err => console.log(err));
             }
 
             // post data when submitted. 

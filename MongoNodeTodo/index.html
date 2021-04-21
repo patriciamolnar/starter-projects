@@ -14,6 +14,7 @@
         <button type="submit">Add</button>
     </form>
 
+    <div class="error"></div>
     <div class="todo-container"></div>
 
     <script>
@@ -21,6 +22,8 @@
             const form = document.getElementById('main-form');
             const input = document.getElementById('todo'); 
             const container = document.querySelector('.todo-container'); 
+            const errorDiv = document.querySelector('.error');
+            const errorMsg = 'An error occurred. Please try again.';
 
             const resetInput = () => {
                 input.value = '';
@@ -42,8 +45,7 @@
                     editBtn.setAttribute('type', 'button'); 
                     editBtn.addEventListener('click', (e) => changeBtn(e.target));
 
-                    const deleteBtn = document.createElement('button'); 
-                    // deleteBtn.setAttribute('id', todo._id); 
+                    const deleteBtn = document.createElement('button');  
                     deleteBtn.textContent = 'Delete'; 
                     deleteBtn.setAttribute('type', 'button');
                     deleteBtn.addEventListener('click', (e) => deleteTodo(e.target));
@@ -56,7 +58,8 @@
             // GET DATA FROM DB
             fetch('/getTodos')
                 .then(response => response.json())
-                .then(data => appendTodo(data));
+                .then(data => appendTodo(data))
+                .catch(err => errorDiv.textContent = errorMsg);
 
             // POST DATA TO DB
             async function postData(data = {}) {
@@ -106,10 +109,14 @@
                 
                 putData({"task": input}, id)
                     .then(result => {
-                        inputField.value = result.value.task;
-                        form.children[1].textContent = 'Edit';
+                        if(result.value.task) {
+                            inputField.value = result.value.task;
+                            form.children[1].textContent = 'Edit';
+                        } else {
+                            errorDiv.textContent = errorMsg;
+                        }
                     })
-                    .catch(err => console.log(err));
+                    .catch(err => errorDiv.textContent = errorMsg);
  
             }
 
@@ -126,8 +133,15 @@
                 const id = ele.parentElement.children[0].getAttribute('id');
 
                 deleteData(id)
-                    .then(result => ele.parentElement.remove())
-                    .catch(err => console.log(err));
+                    .then(result => {
+                        console.log(result);
+                        if(result.lastErrorObject.n == 1) {
+                            ele.parentElement.remove()
+                        } else {
+                            errorDiv.textContent = errorMsg;
+                        }
+                    })
+                    .catch(err => errorDiv.textContent = errorMsg);
             }
 
             // post data when submitted. 
@@ -135,8 +149,15 @@
                 e.preventDefault(); 
                 const data = input.value; 
                 postData({"task": data })
-                    .then(result => appendTodo([result.document]))
-                    .catch(err => console.log(err));
+                    .then(result => {
+                        if(result.document.task) {
+                            appendTodo([result.document]);
+                        } else {
+                            errorDiv.textContent = errorMsg; 
+                        }
+                        
+                    })
+                    .catch(err => errorDiv.textContent = errorMsg);
                 resetInput(); 
             });
 

@@ -28,25 +28,28 @@
 
             const appendTodo = (json) => {
                 json.forEach(todo => {
-                    const div = document.createElement('div');
+                    const form = document.createElement('form'); 
+                    form.addEventListener('submit', (e) => updateTodo(e));
 
                     const ele = document.createElement('input'); 
                     ele.setAttribute('type', 'text'); 
+                    ele.setAttribute('id', todo._id); 
                     ele.disabled = true;
                     ele.value = todo.task; 
 
                     const editBtn = document.createElement('button'); 
-                    editBtn.setAttribute('id', todo._id); 
                     editBtn.textContent = 'Edit'; 
-                    editBtn.addEventListener('click', editTodo);
+                    editBtn.setAttribute('type', 'button'); 
+                    editBtn.addEventListener('click', (e) => changeBtn(e.target));
 
                     const deleteBtn = document.createElement('button'); 
-                    deleteBtn.setAttribute('id', todo._id); 
+                    // deleteBtn.setAttribute('id', todo._id); 
                     deleteBtn.textContent = 'Delete'; 
+                    deleteBtn.setAttribute('type', 'button');
                     deleteBtn.addEventListener('click', deleteTodo);
 
-                    div.append(ele, editBtn, deleteBtn);
-                    container.append(div);    
+                    form.append(ele, editBtn, deleteBtn);
+                    container.append(form);    
                 });
             }
 
@@ -68,12 +71,51 @@
                 return response.json(); 
             }
 
-            async function editTodo(data = {}, id = '') {
-                
+            // PUT DATA TO DB
+            async function putData(data = {}, id = '') {
+                const url = `/${id}`;
+                const response = await fetch(url, {
+                    method: 'PUT', 
+                    headers: {
+                    'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data) 
+                });
+                return response.json(); 
             }
 
-            async function deleteTodo(id = '') {
+            const changeBtn = (ele) => {
+                const input = ele.previousElementSibling; 
+                if(input.disabled === true) {
+                    input.disabled = false;
+                    ele.textContent = 'Cancel';
+                } else {
+                    input.disabled = true;
+                    ele.textContent = 'Edit'; 
+                }
+            }
+
+            const updateTodo = (e) => {
+                e.preventDefault(); 
                 
+                const form = e.target; 
+                const inputField = form.children[0]; 
+                inputField.disabled = true; 
+                const input = inputField.value;
+                const id = inputField.getAttribute('id'); 
+                
+                putData({"task": input}, id)
+                    .then(result => {
+                        inputField.value = result.value.task;
+                        form.children[1].textContent = 'Edit';
+                    })
+                    .catch(err => console.log(err));
+ 
+            }
+
+            //DELETE DATA FROM DB
+            const deleteTodo = (ele) => {
+
             }
 
             // post data when submitted. 

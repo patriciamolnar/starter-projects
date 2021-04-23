@@ -33,6 +33,7 @@
             }
 
             const appendTodo = (json) => { 
+                errorDiv.textContent = '';
                 json.forEach(todo => {
                     const form = document.createElement('form'); 
                     form.addEventListener('submit', (e) => updateTodo(e));

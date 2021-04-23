@@ -32,7 +32,7 @@
                 input.value = '';
             }
 
-            const appendTodo = (json) => {
+            const appendTodo = (json) => { 
                 json.forEach(todo => {
                     const form = document.createElement('form'); 
                     form.addEventListener('submit', (e) => updateTodo(e));
@@ -111,7 +111,8 @@
                 const input = inputField.value;
                 const id = inputField.getAttribute('id'); 
                 
-                putData({"task": input}, id)
+                if(input !== '') {
+                    putData({"task": input}, id)
                     .then(result => {
                         if(result.value.task) {
                             inputField.value = result.value.task;
@@ -121,6 +122,9 @@
                         }
                     })
                     .catch(err => errorDiv.textContent = errorMsg);
+                } else {
+                    errorDiv.textContent = 'Input field must be filled out.';
+                }
  
             }
 
@@ -152,7 +156,8 @@
             form.addEventListener('submit', (e) => {
                 e.preventDefault(); 
                 const data = input.value; 
-                postData({"task": data })
+                if(data !== '') {
+                    postData({"task": data })
                     .then(result => {
                         if(result.document.task) {
                             appendTodo([result.document]);
@@ -162,7 +167,10 @@
                         
                     })
                     .catch(err => errorDiv.textContent = errorMsg);
-                resetInput(); 
+                    resetInput(); 
+                } else {
+                    errorDiv.textContent = 'Input field must be filled out.';
+                }
             });
 
         });

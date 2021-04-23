@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+:root {
+    --font: 'Poppins', sans-serif;
+    --light: #ccc;
+    --dark: #262626; 
+}
+
+body {
+    font-family: var(--font);
+    background-color: var(--light);
+}
+
+main {
+    width: 450px;
+    border: 1px solid var(--light);
+    text-align: center; 
+    margin: 3rem auto; 
+    background-color: #fff;
+}
+
+h1 {
+    text-align: center;
+}
+
+input {
+    padding: 6px 5px 5px;
+    font-family: var(--font);
+    width: 200px;
+    border: 1px solid var(--light);
+}
+
+input:focus {
+    outline: 3px solid var(--dark); 
+    outline-offset: -2px;
+}
+
+input:disabled {
+    border: 1px solid transparent;
+    background-color: #fff;
+}
+
+input::placeholder {
+    font-family: var(--font);
+}
+
+#todo {
+    width: 305px;
+}
+
+button {
+    width: 6rem;
+    border: none; 
+    border-radius: 10px; 
+    padding: 0.5rem 1rem;
+}
+
+button:hover, 
+button:focus {
+    background-color: var(--dark);
+    color: white;
+    outline: none; 
+}
+
+.delete-btn {
+    background-color: #e60000; 
+    color: white; 
+}
+
+#main-form {
+    margin: 5px;
+}
+
+#main-form button {
+    margin: 5px; 
+}
+
+.todo-container > form {
+    margin: 10px 0; 
+}
+
+.todo-container > form > * {
+    margin: 5px; 
+}

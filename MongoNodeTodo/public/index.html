@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles.css">
+    <title>Todo App</title>
+</head>
+<body>
+    <main>
+        <h1>Todo App</h1>
+        <form id="main-form">
+            <label for="todo"></label>
+            <input type="text" name="todo" id="todo" placeholder="Add todo...">
+            <button type="submit">Add</button>
+        </form>
+
+        <div class="error"></div>
+        <div class="todo-container"></div>
+    </main>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('main-form');
+            const input = document.getElementById('todo'); 
+            const container = document.querySelector('.todo-container'); 
+            const errorDiv = document.querySelector('.error');
+            const errorMsg = 'An error occurred. Please try again.';
+
+            const resetInput = () => {
+                input.value = '';
+            }
+
+            const appendTodo = (json) => {
+                json.forEach(todo => {
+                    const form = document.createElement('form'); 
+                    form.addEventListener('submit', (e) => updateTodo(e));
+
+                    const ele = document.createElement('input'); 
+                    ele.setAttribute('type', 'text'); 
+                    ele.setAttribute('id', todo._id); 
+                    ele.disabled = true;
+                    ele.value = todo.task; 
+
+                    const editBtn = document.createElement('button'); 
+                    editBtn.textContent = 'Edit'; 
+                    editBtn.setAttribute('type', 'button'); 
+                    editBtn.addEventListener('click', (e) => changeBtn(e.target));
+
+                    const deleteBtn = document.createElement('button');  
+                    deleteBtn.textContent = 'Delete'; 
+                    deleteBtn.classList.add('delete-btn');
+                    deleteBtn.setAttribute('type', 'button');
+                    deleteBtn.addEventListener('click', (e) => deleteTodo(e.target));
+
+                    form.append(ele, editBtn, deleteBtn);
+                    container.append(form);    
+                });
+            }
+
+            // GET DATA FROM DB
+            fetch('/getTodos')
+                .then(response => response.json())
+                .then(data => appendTodo(data))
+                .catch(err => errorDiv.textContent = errorMsg);
+
+            // POST DATA TO DB
+            async function postData(data = {}) {
+                const url = '/'
+                const response = await fetch(url, {
+                    method: 'POST', 
+                    headers: {
+                    'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data) 
+                });
+                return response.json(); 
+            }
+
+            // PUT DATA TO DB
+            async function putData(data = {}, id = '') {
+                const url = `/${id}`;
+                const response = await fetch(url, {
+                    method: 'PUT', 
+                    headers: {
+                    'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data) 
+                });
+                return response.json(); 
+            }
+
+            const changeBtn = (ele) => {
+                const input = ele.previousElementSibling; 
+                if(input.disabled === true) {
+                    input.disabled = false;
+                    ele.textContent = 'Cancel';
+                } else {
+                    input.disabled = true;
+                    ele.textContent = 'Edit'; 
+                }
+            }
+
+            const updateTodo = (e) => {
+                e.preventDefault(); 
+                
+                const form = e.target; 
+                const inputField = form.children[0]; 
+                inputField.disabled = true; 
+                const input = inputField.value;
+                const id = inputField.getAttribute('id'); 
+                
+                putData({"task": input}, id)
+                    .then(result => {
+                        if(result.value.task) {
+                            inputField.value = result.value.task;
+                            form.children[1].textContent = 'Edit';
+                        } else {
+                            errorDiv.textContent = errorMsg;
+                        }
+                    })
+                    .catch(err => errorDiv.textContent = errorMsg);
+ 
+            }
+
+            //DELETE DATA FROM DB
+            async function deleteData(id = '') {
+                const url = `/${id}`;
+                const response = await fetch(url, {
+                    method: 'DELETE', 
+                });
+                return response.json(); 
+            }
+
+            const deleteTodo = (ele) => {
+                const id = ele.parentElement.children[0].getAttribute('id');
+
+                deleteData(id)
+                    .then(result => {
+                        console.log(result);
+                        if(result.lastErrorObject.n == 1) {
+                            ele.parentElement.remove()
+                        } else {
+                            errorDiv.textContent = errorMsg;
+                        }
+                    })
+                    .catch(err => errorDiv.textContent = errorMsg);
+            }
+
+            // post data when submitted. 
+            form.addEventListener('submit', (e) => {
+                e.preventDefault(); 
+                const data = input.value; 
+                postData({"task": data })
+                    .then(result => {
+                        if(result.document.task) {
+                            appendTodo([result.document]);
+                        } else {
+                            errorDiv.textContent = errorMsg; 
+                        }
+                        
+                    })
+                    .catch(err => errorDiv.textContent = errorMsg);
+                resetInput(); 
+            });
+
+        });
+    </script>
+</body>
+</html>

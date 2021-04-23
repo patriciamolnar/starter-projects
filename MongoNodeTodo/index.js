@@ -18,9 +18,7 @@ db.connect((err) => {
     }
 });
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
+app.use(express.static(__dirname + '/public'));
 
 //get a list of all the todos
 app.get('/getTodos', (req, res) => {

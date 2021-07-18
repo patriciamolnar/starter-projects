@@ -1,0 +1,29 @@
+form {
+  background-color: cyan;
+  padding: 0.5em 2.5em;
+}
+
+.form-controls > * {
+  display: block; 
+}
+
+.form-controls > label {
+  font-weight: 600;
+}
+
+.form-controls > input {
+  padding: 0.5rem;  
+  width: inherit; 
+}
+
+form input[type="submit"] {
+  background-color: black; 
+  color: white; 
+  border: none; 
+  padding: 0.5em 1.5em; 
+  border-radius: 5px;
+  font-weight: 600; 
+  font-family: inherit;
+  letter-spacing: 1px; 
+  margin: 1em 0 3em; 
+}

@@ -1,0 +1,10 @@
+.task {
+  border-bottom: 1px solid #111; 
+  background-color: #eee; 
+  margin: 0.5em 2em; 
+  padding: 0.5em;
+}
+
+.reminder {
+  border-left: 5px solid lightseagreen; 
+}

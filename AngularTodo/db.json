@@ -1,0 +1,28 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "text": "Learn Angular",
+      "day": "July 18th 2021",
+      "reminder": false
+    },
+    {
+      "id": 2,
+      "text": "Resign",
+      "day": "July 19th 2021",
+      "reminder": true
+    },
+    {
+      "id": 3,
+      "text": "Build AL website",
+      "day": "July 19th 2021",
+      "reminder": false
+    },
+    {
+      "text": "Go jogging",
+      "day": "July 18th 2021",
+      "reminder": true,
+      "id": 4
+    }
+  ]
+}
